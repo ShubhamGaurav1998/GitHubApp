@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.githubapp.utils.CommonUtils" />
+
+        <variable
+            name="listItem"
+            type="com.example.githubapp.models.GitHubApiResponseItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/border"
+        android:padding="@dimen/dimen_10">
+
+        <ImageView
+            android:id="@+id/ivUserimage"
+            android:layout_width="@dimen/dimen_70"
+            android:layout_height="@dimen/dimen_70"
+            app:imageUrl="@{listItem.user.avatar_url}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/black" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_7"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:text="@{listItem.title}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            app:layout_constraintLeft_toRightOf="@id/ivUserimage"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="This is a sample title of the video to check if the title works fine" />
+
+        <TextView
+            android:id="@+id/tvCreatedOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_7"
+            android:text="@{@string/created_on.concat(CommonUtils.formatDate(listItem.created_at))}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            app:layout_constraintLeft_toRightOf="@id/ivUserimage"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            tools:text="Created on: 26 July 2022" />
+
+        <TextView
+            android:id="@+id/tvClosedOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_7"
+            android:text="@{@string/closed_on.concat(CommonUtils.formatDate(listItem.closed_at))}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            app:layout_constraintLeft_toRightOf="@id/ivUserimage"
+            app:layout_constraintTop_toBottomOf="@id/tvCreatedOn"
+            tools:text="Closed on: 26 July 2022" />
+
+        <TextView
+            android:id="@+id/tvPrOwner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_7"
+            android:text="@{@string/pr_owner.concat(listItem.user.login)}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            app:layout_constraintLeft_toRightOf="@id/ivUserimage"
+            app:layout_constraintTop_toBottomOf="@id/tvClosedOn"
+            tools:text="PR Owner: Shubham Gaurav" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
