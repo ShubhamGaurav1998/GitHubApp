@@ -19,7 +19,7 @@ class GiHubRepository  (
         val result =
             gitHubService.getResults(
                 Constants.API_PATH, Constants.API_SUBPATH1, Constants.API_SUBPATH2,
-                Constants.API_SUBPATH3, "closed"
+                Constants.API_SUBPATH3, Constants.QUERY_PARAM_CLOSED, Constants.GITHUB_AUTH_TOKEN
             )
 
         if (result.body() != null) {

@@ -9,6 +9,9 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.githubapp.R
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CommonUtils {
 
@@ -38,6 +41,27 @@ class CommonUtils {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView)
             }
+        }
+
+        @JvmStatic
+        fun formatDate(inputDate: String): String {
+            val dateAfterSplit=  inputDate.split("T").get(0)
+
+            val inputPattern = Constants.INPUT_DATE_FORMAT
+            val outputPattern = Constants.OUTPUT_DATE_FORMAT
+            val inputFormat = SimpleDateFormat(inputPattern)
+            val outputFormat = SimpleDateFormat(outputPattern)
+
+            var date: Date? = null
+            var str: String? = null
+
+            try {
+                date = inputFormat.parse(dateAfterSplit)
+                str = outputFormat.format(date)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            return str!!
         }
 
     }
