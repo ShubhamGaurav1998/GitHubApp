@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">GitHubApp</string>
-    <string name="created_on">Created on:</string>
-    <string name="closed_on">Closed on:</string>
-    <string name="pr_owner">PR owner:</string>
+    <string name="created_on">Created on:\u0020 </string>
+    <string name="closed_on">Closed on:\u0020 </string>
+    <string name="pr_owner">PR owner:\u0020 </string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="quit_confirmation_message">Are you sure you want to exit?</string>

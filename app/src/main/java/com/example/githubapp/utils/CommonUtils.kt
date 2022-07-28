@@ -45,7 +45,7 @@ class CommonUtils {
 
         @JvmStatic
         fun formatDate(inputDate: String): String {
-            val dateAfterSplit=  inputDate.split("T").get(0)
+            val dateAfterSplit =  inputDate.split("T").get(0)
 
             val inputPattern = Constants.INPUT_DATE_FORMAT
             val outputPattern = Constants.OUTPUT_DATE_FORMAT
@@ -57,7 +57,7 @@ class CommonUtils {
 
             try {
                 date = inputFormat.parse(dateAfterSplit)
-                str = outputFormat.format(date)
+                str = date?.let { outputFormat.format(it) }
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
