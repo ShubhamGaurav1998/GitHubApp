@@ -34,7 +34,7 @@ class RetrofitInstance {
 
         @Provides
         @Singleton
-        fun providesVideoService(retrofit: Retrofit) : GitHubService {
+        fun providesVideoService(retrofit: Retrofit): GitHubService {
             return retrofit.create(GitHubService::class.java)
         }
 

@@ -42,6 +42,9 @@ dependencies {
     def retrofit_version = "2.9.0"
     def couroutines_version = "1.6.3"
     def lifecycle_version = "2.5.0"
+    def paging_version = "3.1.1"
+
+    implementation "androidx.paging:paging-runtime:$paging_version"
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'

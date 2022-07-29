@@ -7,26 +7,21 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.R
 import com.example.githubapp.adapter.ClosedPrAdapter
 import com.example.githubapp.databinding.ActivityMainBinding
-import com.example.githubapp.di.RetrofitInstance
 import com.example.githubapp.models.GitHubApiResponseItem
-import com.example.githubapp.repository.GiHubRepository
-import com.example.githubapp.retrofit.GitHubService
-import com.example.githubapp.utils.CommonUtils
 import com.example.githubapp.viewModels.MainViewModel
 import com.example.githubapp.viewModels.MainViewModelFactory
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var gitHubRepository: GiHubRepository
 
     //@Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
@@ -40,26 +35,15 @@ class MainActivity : AppCompatActivity() {
         }
         binding.progressBar.visibility = View.VISIBLE
 //        (application as MyApplication).applicationComponent.inject(this)
-        gitHubRepository = GiHubRepository(
-            RetrofitInstance.getRetrofitInstance().create(GitHubService::class.java)
-        )
-        mainViewModelFactory = MainViewModelFactory(gitHubRepository)
+
+        mainViewModelFactory = MainViewModelFactory(this)
         mainViewModel = ViewModelProvider(
             this,
             mainViewModelFactory
         )[MainViewModel::class.java]
 
         initializeRecyclerView()
-        fetchClosedPrFromApi()
         observeClosedPrList()
-    }
-
-    private fun fetchClosedPrFromApi() {
-        if (CommonUtils.isInternetAvailable(this)) {
-            lifecycleScope.launch {
-                mainViewModel.fetchClosedPr()
-            }
-        }
     }
 
     private fun initializeRecyclerView() {
@@ -71,20 +55,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeClosedPrList() {
-        mainViewModel.prLivedata.observe(this) {
-            binding.progressBar.visibility = View.GONE
 
-            if (it != null) {
-                val closedPrList = ArrayList<GitHubApiResponseItem>()
-                it.iterator().forEach { closedPr ->
-                    closedPrList.add(closedPr)
+        mainViewModel.getData().observe(this, object : Observer<PagedList<GitHubApiResponseItem>> {
+            override fun onChanged(it: PagedList<GitHubApiResponseItem>?) {
+                binding.progressBar.visibility = View.GONE
+
+                if (it != null) {
+                    closedPrAdapter.submitList(it)
+                } else {
+                    Toast.makeText(applicationContext, "No data found", Toast.LENGTH_SHORT).show()
                 }
-                closedPrAdapter.setList(closedPrList)
             }
-            else{
-                Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show()
-            }
-        }
+        })
 
     }
 

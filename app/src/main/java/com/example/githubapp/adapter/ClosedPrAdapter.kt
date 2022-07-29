@@ -1,44 +1,52 @@
 package com.example.githubapp.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapp.databinding.RcvListItemBinding
 import com.example.githubapp.models.GitHubApiResponseItem
 
 
-class ClosedPrAdapter() : RecyclerView.Adapter<MyViewHolder>() {
-
-    private var closedPrList = ArrayList<GitHubApiResponseItem>()
+class ClosedPrAdapter : PagedListAdapter<GitHubApiResponseItem, ClosedPrAdapter.MyViewHolder>(
+    USER_COMPARATOR
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItemBinding = RcvListItemBinding.inflate(layoutInflater, parent, false)
         return MyViewHolder(listItemBinding)
-
     }
 
     override fun onBindViewHolder(
-        holder: MyViewHolder,
-        @SuppressLint("RecyclerView") position: Int
+        holder: MyViewHolder, position: Int
     ) {
-        val videoItem = closedPrList[position]
-        holder.bind(videoItem)
+        val videoItem = getItem(position)
+        if (videoItem != null) {
+            holder.bind(videoItem)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return closedPrList.size
+    class MyViewHolder(val binding: RcvListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(videoItem: GitHubApiResponseItem) {
+            binding.listItem = videoItem
+        }
     }
 
-    fun setList(closedPRList: List<GitHubApiResponseItem>) {
-        closedPrList.addAll(closedPRList)
-        this.notifyDataSetChanged()
-    }
-}
+    companion object {
+        private val USER_COMPARATOR = object : DiffUtil.ItemCallback<GitHubApiResponseItem>() {
+            override fun areItemsTheSame(
+                oldItem: GitHubApiResponseItem,
+                newItem: GitHubApiResponseItem
+            ): Boolean =
+                oldItem.id == newItem.id
 
-class MyViewHolder(val binding: RcvListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(videoItem: GitHubApiResponseItem) {
-        binding.listItem = videoItem
+            override fun areContentsTheSame(
+                oldItem: GitHubApiResponseItem,
+                newItem: GitHubApiResponseItem
+            ): Boolean =
+                newItem == oldItem
+        }
     }
 }

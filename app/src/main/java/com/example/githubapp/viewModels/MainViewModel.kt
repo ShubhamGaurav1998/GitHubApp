@@ -1,22 +1,33 @@
 package com.example.githubapp.viewModels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.githubapp.models.GitHubApiResponse
-import com.example.githubapp.repository.GiHubRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.example.githubapp.dataSource.DataSourceFactory
+import com.example.githubapp.models.GitHubApiResponseItem
+import com.example.githubapp.utils.Constants
 
-class MainViewModel(private val gitHubRepository: GiHubRepository) : ViewModel() {
+class MainViewModel(context: Context) : ViewModel() {
 
-    fun fetchClosedPr() {
-        viewModelScope.launch(Dispatchers.IO) {
-            gitHubRepository.getClosedPRs()
+    private var listClosedPRs: LiveData<PagedList<GitHubApiResponseItem>>
+
+    init {
+        val factory: DataSourceFactory by lazy {
+            DataSourceFactory(context)
         }
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPageSize(Constants.PAGE_SIZE)
+            .build()
+
+        listClosedPRs = LivePagedListBuilder(factory, config).build()
+
     }
 
-    val prLivedata: LiveData<GitHubApiResponse>
-        get() = gitHubRepository.prLiveData
+    fun getData(): LiveData<PagedList<GitHubApiResponseItem>> {
+        return listClosedPRs
 
+    }
 }
