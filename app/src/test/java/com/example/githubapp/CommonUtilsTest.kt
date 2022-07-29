@@ -2,6 +2,7 @@ package com.example.githubapp
 
 import com.example.githubapp.utils.CommonUtils
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.fail
 import org.junit.Test
 
 public class CommonUtilsTest {
@@ -16,5 +17,15 @@ public class CommonUtilsTest {
     fun formatDate_januaryInput_expectedOutputReturned() {
         val result: String = CommonUtils.formatDate("2022-01-05T11:27:04Z")
         assertThat(result).isEqualTo("05-Jan-2022")
+    }
+
+    @Test
+    fun TestForException() {
+        try {
+            CommonUtils.formatDate("invalid")
+            fail("no exception thrown")
+        } catch (e: NullPointerException) {
+            assertThat(e).isInstanceOf(NullPointerException::class.java)
+        }
     }
 }

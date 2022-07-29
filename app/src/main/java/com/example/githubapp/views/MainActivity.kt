@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -21,22 +22,23 @@ import com.example.githubapp.viewModels.MainViewModel
 import com.example.githubapp.viewModels.MainViewModelFactory
 import kotlinx.coroutines.launch
 
-private lateinit var binding: ActivityMainBinding
-private lateinit var mainViewModel: MainViewModel
-private lateinit var gitHubRepository: GiHubRepository
-
-//@Inject
-lateinit var mainViewModelFactory: MainViewModelFactory
-private lateinit var closedPrAdapter: ClosedPrAdapter
-
-
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var gitHubRepository: GiHubRepository
+
+    //@Inject
+    lateinit var mainViewModelFactory: MainViewModelFactory
+    private lateinit var closedPrAdapter: ClosedPrAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
+        binding.progressBar.visibility = View.VISIBLE
 //        (application as MyApplication).applicationComponent.inject(this)
         gitHubRepository = GiHubRepository(
             RetrofitInstance.getRetrofitInstance().create(GitHubService::class.java)
@@ -47,11 +49,12 @@ class MainActivity : AppCompatActivity() {
             mainViewModelFactory
         )[MainViewModel::class.java]
 
-        fetchClosePrFromApi()
         initializeRecyclerView()
+        fetchClosedPrFromApi()
+        observeClosedPrList()
     }
 
-    private fun fetchClosePrFromApi() {
+    private fun fetchClosedPrFromApi() {
         if (CommonUtils.isInternetAvailable(this)) {
             lifecycleScope.launch {
                 mainViewModel.fetchClosedPr()
@@ -65,11 +68,12 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         closedPrAdapter = ClosedPrAdapter()
         recyclerView.adapter = closedPrAdapter
-        displayVideosList()
     }
 
-    private fun displayVideosList() {
+    private fun observeClosedPrList() {
         mainViewModel.prLivedata.observe(this) {
+            binding.progressBar.visibility = View.GONE
+
             if (it != null) {
                 val closedPrList = ArrayList<GitHubApiResponseItem>()
                 it.iterator().forEach { closedPr ->
@@ -77,7 +81,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 closedPrAdapter.setList(closedPrList)
             }
+            else{
+                Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show()
+            }
         }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

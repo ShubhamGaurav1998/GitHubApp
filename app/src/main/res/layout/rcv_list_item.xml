@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/dimen_4"
         android:background="@drawable/border"
         android:padding="@dimen/dimen_10">
 
@@ -43,7 +43,7 @@
             app:layout_constraintLeft_toRightOf="@id/ivUserimage"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="This is a sample title of the video to check if the title works fine" />
+            tools:text="This is a sample title of the PR to check if the title ellipsizes fine" />
 
         <TextView
             android:id="@+id/tvCreatedOn"
