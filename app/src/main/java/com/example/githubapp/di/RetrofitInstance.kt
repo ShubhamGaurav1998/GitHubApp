@@ -34,11 +34,9 @@ class RetrofitInstance {
 
         @Provides
         @Singleton
-        fun providesVideoService(retrofit: Retrofit): GitHubService {
+        fun providesPrService(retrofit: Retrofit): GitHubService {
             return retrofit.create(GitHubService::class.java)
         }
 
     }
 }
-
-//https://api.github.com/repos/:owner/:repo/pulls?state=all

@@ -3,8 +3,9 @@ package com.example.githubapp.dataSource
 import android.content.Context
 import androidx.paging.DataSource
 import com.example.githubapp.models.GitHubApiResponseItem
+import javax.inject.Inject
 
-class DataSourceFactory(private val context: Context, private val listener: PrDataSource.ProgressBarStateListener) :
+class DataSourceFactory @Inject constructor(private val context: Context, private val listener: PrDataSource.ProgressBarStateListener) :
     DataSource.Factory<Int, GitHubApiResponseItem>() {
 
     lateinit var prDataSource: PrDataSource

@@ -11,19 +11,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.githubapp.MyApplication
 import com.example.githubapp.R
 import com.example.githubapp.adapter.ClosedPrAdapter
 import com.example.githubapp.databinding.ActivityMainBinding
 import com.example.githubapp.models.GitHubApiResponseItem
 import com.example.githubapp.viewModels.MainViewModel
 import com.example.githubapp.viewModels.MainViewModelFactory
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
 
-    //@Inject
+    @Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
     private lateinit var closedPrAdapter: ClosedPrAdapter
 
@@ -34,9 +36,9 @@ class MainActivity : AppCompatActivity() {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
 
-//        (application as MyApplication).applicationComponent.inject(this)
+        (application as MyApplication).applicationComponent.inject(this)
 
-        mainViewModelFactory = MainViewModelFactory(this)
+//        mainViewModelFactory = MainViewModelFactory(this)
         mainViewModel = ViewModelProvider(
             this,
             mainViewModelFactory

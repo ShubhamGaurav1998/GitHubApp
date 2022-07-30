@@ -11,8 +11,9 @@ import com.example.githubapp.utils.Constants
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class PrDataSource(private val context: Context) :
+class PrDataSource @Inject constructor(private val context: Context) :
     PageKeyedDataSource<Int, GitHubApiResponseItem>() {
 
     var mProgressBarStateListener: ProgressBarStateListener? = null
