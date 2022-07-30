@@ -13,7 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-class PrDataSource @Inject constructor(private val context: Context) :
+class PrDataSource @Inject constructor(private val context: Context, private val gitHubService: GitHubService) :
     PageKeyedDataSource<Int, GitHubApiResponseItem>() {
 
     var mProgressBarStateListener: ProgressBarStateListener? = null
@@ -50,8 +50,7 @@ class PrDataSource @Inject constructor(private val context: Context) :
     private fun getPRs(callback: LoadInitialCallback<Int, GitHubApiResponseItem>) {
         mProgressBarStateListener?.listenProgressBarState(true)
 
-        RetrofitInstance.getRetrofitInstance().create(GitHubService::class.java)
-            .getResults(
+        gitHubService.getResults(
                 Constants.API_PATH,
                 Constants.API_SUBPATH1,
                 Constants.API_SUBPATH2,
@@ -83,8 +82,7 @@ class PrDataSource @Inject constructor(private val context: Context) :
         callback: LoadCallback<Int, GitHubApiResponseItem>
     ) {
         mProgressBarStateListener?.listenProgressBarState(true)
-        RetrofitInstance.getRetrofitInstance().create(GitHubService::class.java)
-            .getResults(
+        gitHubService.getResults(
                 Constants.API_PATH,
                 Constants.API_SUBPATH1,
                 Constants.API_SUBPATH2,

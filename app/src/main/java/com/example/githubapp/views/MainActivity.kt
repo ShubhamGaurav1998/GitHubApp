@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
 
         (application as MyApplication).applicationComponent.inject(this)
 
-//        mainViewModelFactory = MainViewModelFactory(this)
         mainViewModel = ViewModelProvider(
             this,
             mainViewModelFactory
