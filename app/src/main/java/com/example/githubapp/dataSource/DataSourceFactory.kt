@@ -7,8 +7,9 @@ import com.example.githubapp.models.GitHubApiResponseItem
 class DataSourceFactory(private val context: Context) :
     DataSource.Factory<Int, GitHubApiResponseItem>() {
 
+    lateinit var imageDataSource: PrDataSource
     override fun create(): DataSource<Int, GitHubApiResponseItem> {
-        val imageDataSource = PrDataSource(context)
+        imageDataSource = PrDataSource(context)
         return imageDataSource
     }
 
