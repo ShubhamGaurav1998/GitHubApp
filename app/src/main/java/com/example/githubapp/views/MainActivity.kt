@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -27,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     //@Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
     private lateinit var closedPrAdapter: ClosedPrAdapter
-    lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +33,7 @@ class MainActivity : AppCompatActivity() {
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
-        binding.progressBar.visibility = View.VISIBLE
-//        progressBar = binding.progressBar
+
 //        (application as MyApplication).applicationComponent.inject(this)
 
         mainViewModelFactory = MainViewModelFactory(this)
@@ -52,6 +49,14 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.refresh()
         }
 
+        observeProgressBarState()
+
+    }
+
+    private fun observeProgressBarState() {
+        mainViewModel.progressBarLiveData.observe(this, Observer {
+            binding.progressBar.visibility = if(it) View.VISIBLE else View.GONE
+        })
     }
 
     private fun initializeRecyclerView() {
@@ -65,9 +70,7 @@ class MainActivity : AppCompatActivity() {
     private fun observeClosedPrList() {
         mainViewModel.getPrPagedList().observe(this, object : Observer<PagedList<GitHubApiResponseItem>> {
             override fun onChanged(it: PagedList<GitHubApiResponseItem>?) {
-//                binding.progressBar.visibility = if(it.isNullOrEmpty()) View.VISIBLE else View.GONE
                 if (it != null) {
-                    binding.progressBar.visibility = View.GONE
                     binding.swipeRefreshLayout.isRefreshing = false
                     closedPrAdapter.submitList(it)
                     closedPrAdapter.notifyDataSetChanged()

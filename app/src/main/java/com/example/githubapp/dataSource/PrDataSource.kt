@@ -14,6 +14,9 @@ import retrofit2.Response
 
 class PrDataSource(private val context: Context) :
     PageKeyedDataSource<Int, GitHubApiResponseItem>() {
+
+    var mProgressBarStateListener: ProgressBarStateListener? = null
+
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, GitHubApiResponseItem>
@@ -44,6 +47,7 @@ class PrDataSource(private val context: Context) :
     }
 
     private fun getPRs(callback: LoadInitialCallback<Int, GitHubApiResponseItem>) {
+        mProgressBarStateListener?.listenProgressBarState(true)
 
         RetrofitInstance.getRetrofitInstance().create(GitHubService::class.java)
             .getResults(
@@ -58,12 +62,14 @@ class PrDataSource(private val context: Context) :
             ).enqueue(object :
                 Callback<GitHubApiResponse> {
                 override fun onFailure(call: Call<GitHubApiResponse>, t: Throwable) {
+                    mProgressBarStateListener?.listenProgressBarState(false)
                 }
 
                 override fun onResponse(
                     call: Call<GitHubApiResponse>,
                     response: Response<GitHubApiResponse>
                 ) {
+                    mProgressBarStateListener?.listenProgressBarState(false)
                     val clodedPrResponse = response.body()
                     clodedPrResponse?.let { callback.onResult(it, null, 2) }
                 }
@@ -75,7 +81,7 @@ class PrDataSource(private val context: Context) :
         previousOrNextPageNo: Int,
         callback: LoadCallback<Int, GitHubApiResponseItem>
     ) {
-
+        mProgressBarStateListener?.listenProgressBarState(true)
         RetrofitInstance.getRetrofitInstance().create(GitHubService::class.java)
             .getResults(
                 Constants.API_PATH,
@@ -89,16 +95,26 @@ class PrDataSource(private val context: Context) :
             ).enqueue(object :
                 Callback<GitHubApiResponse> {
                 override fun onFailure(call: Call<GitHubApiResponse>, t: Throwable) {
+                    mProgressBarStateListener?.listenProgressBarState(false)
                 }
 
                 override fun onResponse(
                     call: Call<GitHubApiResponse>,
                     response: Response<GitHubApiResponse>
                 ) {
+                    mProgressBarStateListener?.listenProgressBarState(false)
                     val clodedPrResponse = response.body()
                     clodedPrResponse?.let { callback.onResult(it, previousOrNextPageNo) }
                 }
             })
+    }
+
+    interface ProgressBarStateListener {
+        fun listenProgressBarState(show: Boolean)
+    }
+
+    fun setProgressbarStateListenr(progressBarStateListener: ProgressBarStateListener) {
+        mProgressBarStateListener = progressBarStateListener
     }
 
 }

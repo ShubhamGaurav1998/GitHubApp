@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.paging.DataSource
 import com.example.githubapp.models.GitHubApiResponseItem
 
-class DataSourceFactory(private val context: Context) :
+class DataSourceFactory(private val context: Context, private val listener: PrDataSource.ProgressBarStateListener) :
     DataSource.Factory<Int, GitHubApiResponseItem>() {
 
-    lateinit var imageDataSource: PrDataSource
+    lateinit var prDataSource: PrDataSource
     override fun create(): DataSource<Int, GitHubApiResponseItem> {
-        imageDataSource = PrDataSource(context)
-        return imageDataSource
+        prDataSource = PrDataSource(context)
+        prDataSource.setProgressbarStateListenr(listener)
+        return prDataSource
     }
 
 }

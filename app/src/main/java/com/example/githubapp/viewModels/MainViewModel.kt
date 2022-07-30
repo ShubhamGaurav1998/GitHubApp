@@ -2,22 +2,23 @@ package com.example.githubapp.viewModels
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.githubapp.dataSource.DataSourceFactory
+import com.example.githubapp.dataSource.PrDataSource
 import com.example.githubapp.models.GitHubApiResponseItem
 import com.example.githubapp.utils.Constants
 
-class MainViewModel(context: Context) : ViewModel() {
+class MainViewModel(context: Context) : ViewModel(), PrDataSource.ProgressBarStateListener {
 
     private var closedPrPagedList: LiveData<PagedList<GitHubApiResponseItem>>
     private var factory: DataSourceFactory
+    private var progressBarMutableData = MutableLiveData<Boolean>()
+    var progressBarLiveData: LiveData<Boolean> = progressBarMutableData
     init {
-//        val factory: DataSourceFactory by lazy {
-//            DataSourceFactory(context)
-//        }
-        factory = DataSourceFactory(context)
+        factory = DataSourceFactory(context, this)
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(Constants.PAGE_SIZE)
@@ -33,7 +34,10 @@ class MainViewModel(context: Context) : ViewModel() {
     }
 
     fun refresh() {
-//        closedPrPagedList.value?.dataSource?.invalidate()
-        factory.imageDataSource.invalidate()
+        factory.prDataSource.invalidate()
+    }
+
+    override fun listenProgressBarState(show: Boolean) {
+        progressBarMutableData.postValue(show)
     }
 }
