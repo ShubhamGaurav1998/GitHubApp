@@ -31,6 +31,7 @@ class ClosedPrAdapter : PagedListAdapter<GitHubApiResponseItem, ClosedPrAdapter.
     class MyViewHolder(val binding: RcvListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(videoItem: GitHubApiResponseItem) {
             binding.listItem = videoItem
+            binding.executePendingBindings()
         }
     }
 
