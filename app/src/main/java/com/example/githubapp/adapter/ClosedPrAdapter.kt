@@ -22,15 +22,15 @@ class ClosedPrAdapter : PagedListAdapter<GitHubApiResponseItem, ClosedPrAdapter.
     override fun onBindViewHolder(
         holder: MyViewHolder, position: Int
     ) {
-        val videoItem = getItem(position)
-        if (videoItem != null) {
-            holder.bind(videoItem)
+        val closedPrItem = getItem(position)
+        if (closedPrItem != null) {
+            holder.bind(closedPrItem)
         }
     }
 
     class MyViewHolder(val binding: RcvListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(videoItem: GitHubApiResponseItem) {
-            binding.listItem = videoItem
+        fun bind(closedPrItem: GitHubApiResponseItem) {
+            binding.listItem = closedPrItem
             binding.executePendingBindings()
         }
     }
