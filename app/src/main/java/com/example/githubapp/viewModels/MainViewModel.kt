@@ -1,43 +1,22 @@
 package com.example.githubapp.viewModels
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import com.example.githubapp.dataSource.DataSourceFactory
-import com.example.githubapp.dataSource.PrDataSource
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.githubapp.repository.MainRepository
 import com.example.githubapp.models.GitHubApiResponseItem
-import com.example.githubapp.utils.Constants
 
-class MainViewModel(context: Context) : ViewModel(), PrDataSource.ProgressBarStateListener {
 
-    private var closedPrPagedList: LiveData<PagedList<GitHubApiResponseItem>>
-    private var factory: DataSourceFactory
-    private var progressBarMutableData = MutableLiveData<Boolean>()
-    var progressBarLiveData: LiveData<Boolean> = progressBarMutableData
-    init {
-        factory = DataSourceFactory(context, this)
-        val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setPageSize(Constants.PAGE_SIZE)
-            .build()
+class MainViewModel constructor(private val mainRepository: MainRepository) : ViewModel() {
 
-        closedPrPagedList = LivePagedListBuilder(factory, config).build()
+    val errorMessage = MutableLiveData<String>()
 
+    fun getClosedPrList(): LiveData<PagingData<GitHubApiResponseItem>> {
+        return mainRepository.getAllClosedPrs().cachedIn(viewModelScope)
     }
 
-    fun getPrPagedList(): LiveData<PagedList<GitHubApiResponseItem>> {
-        return closedPrPagedList
-
-    }
-
-    fun refresh() {
-        factory.prDataSource.invalidate()
-    }
-
-    override fun listenProgressBarState(show: Boolean) {
-        progressBarMutableData.postValue(show)
-    }
 }
+

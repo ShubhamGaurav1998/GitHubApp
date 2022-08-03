@@ -55,7 +55,7 @@ class RetrofitInstanceTest {
                 1,
                 Constants.PAGE_SIZE,
                 Constants.GITHUB_AUTH_TOKEN
-            ).execute().body()
+            ).body()
             val request = server.takeRequest()
             assertThat(responseBody).isNotNull()
             assertThat(request.path).isEqualTo("/repos/square/retrofit/pulls?state=closed&page=1&per_page=30")
@@ -77,7 +77,7 @@ class RetrofitInstanceTest {
                 1,
                 Constants.PAGE_SIZE,
                 Constants.GITHUB_AUTH_TOKEN
-            ).execute().body()
+            ).body()
             assertThat(responseBody?.size).isEqualTo(30)
 
         }
@@ -96,7 +96,7 @@ class RetrofitInstanceTest {
                 1,
                 Constants.PAGE_SIZE,
                 Constants.GITHUB_AUTH_TOKEN
-            ).execute().body()
+            ).body()
             val closedPR = responseBody?.get(0)
             assertThat(closedPR?.title).isEqualTo("refact classes ")
             assertThat(closedPR?.created_at).isEqualTo("2022-07-25T11:27:16Z")

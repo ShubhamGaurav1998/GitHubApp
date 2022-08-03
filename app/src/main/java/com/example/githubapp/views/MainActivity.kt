@@ -3,21 +3,21 @@ package com.example.githubapp.views
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.PagedList
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.MyApplication
 import com.example.githubapp.R
 import com.example.githubapp.adapter.ClosedPrAdapter
 import com.example.githubapp.databinding.ActivityMainBinding
-import com.example.githubapp.models.GitHubApiResponseItem
 import com.example.githubapp.viewModels.MainViewModel
 import com.example.githubapp.viewModels.MainViewModelFactory
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -43,21 +43,22 @@ class MainActivity : AppCompatActivity() {
             mainViewModelFactory
         )[MainViewModel::class.java]
 
+        observeErrorMessage()
         initializeRecyclerView()
         observeClosedPrList()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            mainViewModel.refresh()
+            closedPrAdapter.refresh()
         }
 
-        observeProgressBarState()
+
 
     }
 
-    private fun observeProgressBarState() {
-        mainViewModel.progressBarLiveData.observe(this, Observer {
-            binding.progressBar.visibility = if(it) View.VISIBLE else View.GONE
-        })
+    private fun observeErrorMessage() {
+        mainViewModel.errorMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initializeRecyclerView() {
@@ -66,20 +67,38 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         closedPrAdapter = ClosedPrAdapter()
         recyclerView.adapter = closedPrAdapter
+
+        closedPrAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading ||
+                loadState.append is LoadState.Loading)
+                binding.progressBar.isVisible = true
+            else {
+                binding.progressBar.isVisible = false
+                val errorState = when {
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.prepend is LoadState.Error ->  loadState.prepend as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    else -> null
+                }
+                errorState?.let {
+                    Toast.makeText(this, it.error.toString(), Toast.LENGTH_LONG).show()
+                }
+
+            }
+        }
+
     }
 
     private fun observeClosedPrList() {
-        mainViewModel.getPrPagedList().observe(this, object : Observer<PagedList<GitHubApiResponseItem>> {
-            override fun onChanged(it: PagedList<GitHubApiResponseItem>?) {
-                if (it != null) {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    closedPrAdapter.submitList(it)
-                    closedPrAdapter.notifyDataSetChanged()
-                } else {
-                    Toast.makeText(applicationContext, "No data found", Toast.LENGTH_SHORT).show()
+
+        lifecycleScope.launch {
+            mainViewModel.getClosedPrList().observe(this@MainActivity) {
+                binding.swipeRefreshLayout.isRefreshing = false
+                it?.let {
+                    closedPrAdapter.submitData(lifecycle, it)
                 }
             }
-        })
+        }
 
     }
 

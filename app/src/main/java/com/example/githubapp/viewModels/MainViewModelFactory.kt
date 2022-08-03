@@ -1,13 +1,17 @@
 package com.example.githubapp.viewModels
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.githubapp.repository.MainRepository
 import javax.inject.Inject
 
-class MainViewModelFactory @Inject constructor
-    (private val context: Context): ViewModelProvider.Factory {
+class MainViewModelFactory @Inject constructor(private val repository: MainRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel(context) as T
+        return if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            MainViewModel(this.repository) as T
+        } else {
+            throw IllegalArgumentException("ViewModel Not Found")
+        }
     }
 }

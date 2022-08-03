@@ -2,14 +2,14 @@ package com.example.githubapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubapp.databinding.RcvListItemBinding
 import com.example.githubapp.models.GitHubApiResponseItem
 
 
-class ClosedPrAdapter : PagedListAdapter<GitHubApiResponseItem, ClosedPrAdapter.MyViewHolder>(
+class ClosedPrAdapter : PagingDataAdapter<GitHubApiResponseItem, ClosedPrAdapter.MyViewHolder>(
     USER_COMPARATOR
 ) {
 
