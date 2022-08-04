@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             mainViewModelFactory
         )[MainViewModel::class.java]
 
-        observeErrorMessage()
         initializeRecyclerView()
         observeClosedPrList()
 
@@ -51,14 +50,6 @@ class MainActivity : AppCompatActivity() {
             closedPrAdapter.refresh()
         }
 
-
-
-    }
-
-    private fun observeErrorMessage() {
-        mainViewModel.errorMessage.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun initializeRecyclerView() {

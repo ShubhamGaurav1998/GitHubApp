@@ -12,8 +12,6 @@ import com.example.githubapp.models.GitHubApiResponseItem
 
 class MainViewModel constructor(private val mainRepository: MainRepository) : ViewModel() {
 
-    val errorMessage = MutableLiveData<String>()
-
     fun getClosedPrList(): LiveData<PagingData<GitHubApiResponseItem>> {
         return mainRepository.getAllClosedPrs().cachedIn(viewModelScope)
     }

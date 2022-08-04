@@ -5,7 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.fail
 import org.junit.Test
 
-public class CommonUtilsTest {
+class CommonUtilsTest {
 
     @Test
     fun formatDate_mayInput_expectedOutputReturned() {

@@ -59,8 +59,6 @@ class RetrofitInstanceTest {
             val request = server.takeRequest()
             assertThat(responseBody).isNotNull()
             assertThat(request.path).isEqualTo("/repos/square/retrofit/pulls?state=closed&page=1&per_page=30")
-
-
         }
     }
 
@@ -79,7 +77,6 @@ class RetrofitInstanceTest {
                 Constants.GITHUB_AUTH_TOKEN
             ).body()
             assertThat(responseBody?.size).isEqualTo(30)
-
         }
     }
 

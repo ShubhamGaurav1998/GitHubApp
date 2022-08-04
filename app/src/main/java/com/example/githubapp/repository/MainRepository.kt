@@ -12,7 +12,7 @@ import com.example.githubapp.retrofit.GitHubService
 import com.example.githubapp.utils.Constants
 import javax.inject.Inject
 
-class MainRepository @Inject constructor(private val context: Context, private val gitHubService: GitHubService) {
+class MainRepository @Inject constructor(private val gitHubService: GitHubService) {
 
     fun getAllClosedPrs(): LiveData<PagingData<GitHubApiResponseItem>> {
 
@@ -23,7 +23,7 @@ class MainRepository @Inject constructor(private val context: Context, private v
                 initialLoadSize = 2
             ),
             pagingSourceFactory = {
-                ClosedPrDataSource(context, gitHubService)
+                ClosedPrDataSource(gitHubService)
             }
             , initialKey = 1
         ).liveData

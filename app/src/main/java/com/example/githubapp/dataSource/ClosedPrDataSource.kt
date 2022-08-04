@@ -9,9 +9,8 @@ import com.example.githubapp.retrofit.GitHubService
 import com.example.githubapp.utils.Constants
 import javax.inject.Inject
 
-class ClosedPrDataSource @Inject constructor(private val context: Context, private val gitHubService: GitHubService) :
+class ClosedPrDataSource @Inject constructor(private val gitHubService: GitHubService) :
     PagingSource<Int, GitHubApiResponseItem>() {
-
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GitHubApiResponseItem> {
         return try {
